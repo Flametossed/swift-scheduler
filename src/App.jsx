@@ -335,19 +335,6 @@ export default function App() {
     <div className="max-w-4xl mx-auto space-y-6">
       <Card isDarkMode={isDarkMode} className="p-6">
         <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
-          <Calendar className="text-indigo-500" size={20} />
-          Schedule Name
-        </h3>
-        <input
-          type="text"
-          value={scheduleName}
-          onChange={(e) => setScheduleName(e.target.value)}
-          placeholder="Enter schedule name..."
-          className={`w-full p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${isDarkMode ? 'bg-gray-900/50 border-gray-700 text-gray-100 placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400'}`}
-        />
-      </Card>
-      <Card isDarkMode={isDarkMode} className="p-6">
-        <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
           <Clock className="text-indigo-500" size={20} />
           Business Operating Hours
         </h3>
@@ -540,6 +527,19 @@ export default function App() {
                 SwiftSchedule
               </span>
             </div>
+            <div className="flex items-center flex-1 mx-6">
+              <input
+                type="text"
+                value={scheduleName}
+                onChange={(e) => setScheduleName(e.target.value)}
+                placeholder="Schedule name..."
+                className={`w-full text-center font-semibold bg-transparent border-b-2 focus:outline-none px-2 py-1 transition-colors ${
+                  isDarkMode
+                    ? 'border-gray-700 focus:border-indigo-500 text-gray-100 placeholder-gray-500'
+                    : 'border-gray-200 focus:border-indigo-500 text-gray-800 placeholder-gray-400'
+                }`}
+              />
+            </div>
             <div className="flex space-x-1 items-center">
               {['schedule', 'staff', 'settings'].map(tab => (
                  <button
@@ -566,13 +566,6 @@ export default function App() {
           </div>
         </div>
       </nav>
-
-      {/* Schedule Name Banner */}
-      {scheduleName && (
-        <div className={`border-b py-3 text-center ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-          <h1 className={`text-xl font-semibold ${textPrimary}`}>{scheduleName}</h1>
-        </div>
-      )}
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
