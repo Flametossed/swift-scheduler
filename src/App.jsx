@@ -120,6 +120,7 @@ export default function App() {
   const [businessHours, setBusinessHours] = useState(defaultBusinessHours);
   const [selectedWeek, setSelectedWeek] = useState(new Date().toISOString().split('T')[0]);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [staffSort, setStaffSort] = useState({ key: null, dir: 'asc' });
   
   // Modal State
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
@@ -263,14 +264,40 @@ export default function App() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className={`border-b ${borderNormal} ${textSecondary} text-sm`}>
-                  <th className="py-3 font-semibold">Name</th>
-                  <th className="py-3 font-semibold">Position</th>
+                  {['name', 'position'].map(key => {
+                    const isActive = staffSort.key === key;
+                    return (
+                      <th
+                        key={key}
+                        className="py-3 font-semibold cursor-pointer select-none group/th"
+                        onClick={() => setStaffSort(prev =>
+                          prev.key === key
+                            ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
+                            : { key, dir: 'asc' }
+                        )}
+                      >
+                        <span className={`inline-flex items-center gap-1 hover:text-indigo-500 transition-colors ${isActive ? 'text-indigo-500' : ''}`}>
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                          <span className="text-[10px]">
+                            {isActive ? (staffSort.dir === 'asc' ? '▲' : '▼') : <span className="opacity-30">▲</span>}
+                          </span>
+                        </span>
+                      </th>
+                    );
+                  })}
                   <th className="py-3 font-semibold">Max Hours</th>
                   <th className="py-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {staff.map(emp => (
+                {[...staff].sort((a, b) => {
+                  if (!staffSort.key) return 0;
+                  const valA = a[staffSort.key].toLowerCase();
+                  const valB = b[staffSort.key].toLowerCase();
+                  return staffSort.dir === 'asc'
+                    ? valA.localeCompare(valB)
+                    : valB.localeCompare(valA);
+                }).map(emp => (
                   <tr key={emp.id} className={`border-b ${borderNormal} group ${isDarkMode ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'}`}>
                     <td className={`py-3 font-medium ${textPrimary}`}>{emp.name}</td>
                     <td className={`py-3 ${textSecondary}`}>
