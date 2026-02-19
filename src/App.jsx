@@ -120,6 +120,7 @@ export default function App() {
   const [businessHours, setBusinessHours] = useState(defaultBusinessHours);
   const [selectedWeek, setSelectedWeek] = useState(new Date().toISOString().split('T')[0]);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [scheduleName, setScheduleName] = useState('');
   const [staffSort, setStaffSort] = useState({ key: null, dir: 'asc' });
   
   // Modal State
@@ -136,13 +137,14 @@ export default function App() {
       setShifts(parsed.shifts || []);
       setBusinessHours(parsed.businessHours || defaultBusinessHours);
       if (parsed.isDarkMode !== undefined) setIsDarkMode(parsed.isDarkMode);
+      if (parsed.scheduleName !== undefined) setScheduleName(parsed.scheduleName);
     }
   }, []);
 
   // Save to local storage
   useEffect(() => {
-    localStorage.setItem('swiftScheduleData', JSON.stringify({ staff, shifts, businessHours, isDarkMode }));
-  }, [staff, shifts, businessHours, isDarkMode]);
+    localStorage.setItem('swiftScheduleData', JSON.stringify({ staff, shifts, businessHours, isDarkMode, scheduleName }));
+  }, [staff, shifts, businessHours, isDarkMode, scheduleName]);
 
   // --- Logic Helpers ---
 
@@ -331,6 +333,19 @@ export default function App() {
 
   const SettingsView = () => (
     <div className="max-w-4xl mx-auto space-y-6">
+      <Card isDarkMode={isDarkMode} className="p-6">
+        <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
+          <Calendar className="text-indigo-500" size={20} />
+          Schedule Name
+        </h3>
+        <input
+          type="text"
+          value={scheduleName}
+          onChange={(e) => setScheduleName(e.target.value)}
+          placeholder="Enter schedule name..."
+          className={`w-full p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${isDarkMode ? 'bg-gray-900/50 border-gray-700 text-gray-100 placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400'}`}
+        />
+      </Card>
       <Card isDarkMode={isDarkMode} className="p-6">
         <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
           <Clock className="text-indigo-500" size={20} />
@@ -551,6 +566,13 @@ export default function App() {
           </div>
         </div>
       </nav>
+
+      {/* Schedule Name Banner */}
+      {scheduleName && (
+        <div className={`border-b py-3 text-center ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+          <h1 className={`text-xl font-semibold ${textPrimary}`}>{scheduleName}</h1>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
