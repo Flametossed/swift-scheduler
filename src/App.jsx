@@ -45,6 +45,22 @@ const formatTime = (time) => {
   return `${hour12}:${m} ${ampm}`;
 };
 
+const getWeekDates = (weekStr) => {
+  const date = new Date(weekStr + 'T00:00:00');
+  const dayOfWeek = date.getDay(); // 0=Sun, 1=Mon ... 6=Sat
+  const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const monday = new Date(date);
+  monday.setDate(date.getDate() + diff);
+  return daysOfWeek.map((_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+};
+
+const formatShortDate = (date) =>
+  date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
 // --- Components ---
 
 const Card = ({ children, className = "", isDarkMode }) => (
@@ -381,15 +397,18 @@ export default function App() {
           <thead>
             <tr>
               <th className={`p-4 text-left border-b border-r w-64 min-w-[200px] sticky left-0 z-10 ${isDarkMode ? 'bg-gray-900 border-gray-700 text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-700'}`}>Employee</th>
-              {daysOfWeek.map(day => {
+              {daysOfWeek.map((day, i) => {
                 const isClosed = !businessHours.find(b => b.day === day)?.isOpen;
+                const weekDates = getWeekDates(selectedWeek);
+                const dateLabel = formatShortDate(weekDates[i]);
                 return (
                   <th key={day} className={`p-3 text-center border-b ${borderNormal} min-w-[120px] 
                     ${isClosed 
                       ? (isDarkMode ? 'bg-gray-900/70 text-gray-600' : 'bg-gray-100 text-gray-400') 
                       : (isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-50 text-gray-700')}`}>
                     <div className="text-sm font-semibold">{day}</div>
-                    <div className="text-xs font-normal mt-1 opacity-70">
+                    <div className="text-xs font-normal mt-0.5 opacity-80">{dateLabel}</div>
+                    <div className="text-[10px] font-normal mt-0.5 opacity-50">
                        {isClosed ? 'Closed' : 'Open'}
                     </div>
                   </th>
