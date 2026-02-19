@@ -541,18 +541,10 @@ export default function App() {
                 SwiftSchedule
               </span>
             </div>
-            <div className="flex items-center flex-1 mx-6">
-              <input
-                type="text"
-                value={scheduleName}
-                onChange={(e) => setScheduleName(e.target.value)}
-                placeholder="Schedule name..."
-                className={`w-full text-center font-semibold bg-transparent border-b-2 focus:outline-none px-2 py-1 transition-colors ${
-                  isDarkMode
-                    ? 'border-gray-700 focus:border-indigo-500 text-gray-100 placeholder-gray-500'
-                    : 'border-gray-200 focus:border-indigo-500 text-gray-800 placeholder-gray-400'
-                }`}
-              />
+            <div className="flex items-center justify-center flex-1 mx-6">
+              <span className={`text-center font-semibold truncate ${scheduleName ? textPrimary : textSecondary}`}>
+                {scheduleName || 'Schedule name...'}
+              </span>
             </div>
             <div className="flex space-x-1 items-center">
               {['schedule', 'staff', 'settings'].map(tab => (
