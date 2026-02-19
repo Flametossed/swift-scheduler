@@ -111,6 +111,78 @@ const Input = ({ label, isDarkMode, ...props }) => (
   </div>
 );
 
+// --- Settings View ---
+
+const SettingsView = ({ isDarkMode, scheduleName, setScheduleName, businessHours, setBusinessHours, textPrimary, textSecondary }) => (
+  <div className="max-w-4xl mx-auto space-y-6">
+    <Card isDarkMode={isDarkMode} className="p-6">
+      <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
+        <Calendar className="text-indigo-500" size={20} />
+        Schedule Name
+      </h3>
+      <input
+        type="text"
+        value={scheduleName}
+        onChange={(e) => setScheduleName(e.target.value)}
+        placeholder="Enter schedule name..."
+        className={`w-full p-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${isDarkMode ? 'bg-gray-900/50 border-gray-700 text-gray-100 placeholder-gray-500' : 'bg-gray-50 border-gray-200 text-gray-800 placeholder-gray-400'}`}
+      />
+    </Card>
+    <Card isDarkMode={isDarkMode} className="p-6">
+      <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
+        <Clock className="text-indigo-500" size={20} />
+        Business Operating Hours
+      </h3>
+      <div className="grid gap-4">
+        {businessHours.map((bh, idx) => (
+          <div key={bh.day} className={`flex items-center justify-between p-3 rounded-lg border ${isDarkMode ? 'bg-gray-900/50 border-gray-700' : 'bg-gray-50 border-gray-100'}`}>
+            <div className="flex items-center gap-3 w-32">
+              <input
+                type="checkbox"
+                checked={bh.isOpen}
+                onChange={(e) => {
+                  const newHours = [...businessHours];
+                  newHours[idx] = { ...newHours[idx], isOpen: e.target.checked };
+                  setBusinessHours(newHours);
+                }}
+                className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 bg-gray-700 border-gray-600"
+              />
+              <span className={`font-medium ${bh.isOpen ? textPrimary : textSecondary}`}>{bh.day}</span>
+            </div>
+            {bh.isOpen ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="time"
+                  value={bh.open}
+                  onChange={(e) => {
+                    const newHours = [...businessHours];
+                    newHours[idx] = { ...newHours[idx], open: e.target.value };
+                    setBusinessHours(newHours);
+                  }}
+                  className={`p-2 border rounded text-sm ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-800'}`}
+                />
+                <span className={textSecondary}>-</span>
+                <input
+                  type="time"
+                  value={bh.close}
+                  onChange={(e) => {
+                    const newHours = [...businessHours];
+                    newHours[idx] = { ...newHours[idx], close: e.target.value };
+                    setBusinessHours(newHours);
+                  }}
+                  className={`p-2 border rounded text-sm ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-800'}`}
+                />
+              </div>
+            ) : (
+              <span className={`${textSecondary} italic text-sm pr-12`}>Closed</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </Card>
+  </div>
+);
+
 // --- Main Application ---
 
 export default function App() {
@@ -331,64 +403,6 @@ export default function App() {
     </div>
   );
 
-  const SettingsView = () => (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <Card isDarkMode={isDarkMode} className="p-6">
-        <h3 className={`text-lg font-bold mb-6 flex items-center gap-2 ${textPrimary}`}>
-          <Clock className="text-indigo-500" size={20} />
-          Business Operating Hours
-        </h3>
-        <div className="grid gap-4">
-          {businessHours.map((bh, idx) => (
-            <div key={bh.day} className={`flex items-center justify-between p-3 rounded-lg border ${isDarkMode ? 'bg-gray-900/50 border-gray-700' : 'bg-gray-50 border-gray-100'}`}>
-              <div className="flex items-center gap-3 w-32">
-                <input 
-                  type="checkbox" 
-                  checked={bh.isOpen}
-                  onChange={(e) => {
-                    const newHours = [...businessHours];
-                    newHours[idx].isOpen = e.target.checked;
-                    setBusinessHours(newHours);
-                  }}
-                  className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 bg-gray-700 border-gray-600"
-                />
-                <span className={`font-medium ${bh.isOpen ? textPrimary : textSecondary}`}>{bh.day}</span>
-              </div>
-              
-              {bh.isOpen ? (
-                <div className="flex items-center gap-2">
-                  <input 
-                    type="time" 
-                    value={bh.open}
-                    onChange={(e) => {
-                      const newHours = [...businessHours];
-                      newHours[idx].open = e.target.value;
-                      setBusinessHours(newHours);
-                    }}
-                    className={`p-2 border rounded text-sm ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-800'}`}
-                  />
-                  <span className={textSecondary}>-</span>
-                  <input 
-                    type="time" 
-                    value={bh.close}
-                    onChange={(e) => {
-                      const newHours = [...businessHours];
-                      newHours[idx].close = e.target.value;
-                      setBusinessHours(newHours);
-                    }}
-                    className={`p-2 border rounded text-sm ${isDarkMode ? 'bg-gray-800 border-gray-600 text-gray-200' : 'bg-white border-gray-300 text-gray-800'}`}
-                  />
-                </div>
-              ) : (
-                <span className={`${textSecondary} italic text-sm pr-12`}>Closed</span>
-              )}
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
-
   const ScheduleView = () => (
     <div className="space-y-4">
       {/* Schedule Header Controls */}
@@ -571,7 +585,7 @@ export default function App() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === 'schedule' && <ScheduleView />}
         {activeTab === 'staff' && <StaffView />}
-        {activeTab === 'settings' && <SettingsView />}
+        {activeTab === 'settings' && <SettingsView isDarkMode={isDarkMode} scheduleName={scheduleName} setScheduleName={setScheduleName} businessHours={businessHours} setBusinessHours={setBusinessHours} textPrimary={textPrimary} textSecondary={textSecondary} />}
       </main>
 
       {/* Shift Edit Modal */}
